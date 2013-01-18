@@ -30,8 +30,7 @@
         {
             if (source == null)
                 throw new ArgumentNullException("source");
-            if (options == null)
-                throw new ArgumentNullException("options");
+            Argument.EnsureEnumIsValid(options, "options");
 
             if (separators == null)
                 separators = new char[0];
