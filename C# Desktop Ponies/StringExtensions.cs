@@ -28,8 +28,10 @@
         /// with no matching closing qualifier.</exception>
         public static string[] SplitQualified(this string source, char[] separators, char[,] qualifiers, StringSplitOptions options)
         {
-            Argument.EnsureNotNull(source, "source");
-            Argument.EnsureEnumIsValid(options, "options");
+            if (source == null)
+                throw new ArgumentNullException("source");
+            if (options == null)
+                throw new ArgumentNullException("options");
 
             if (separators == null)
                 separators = new char[0];
