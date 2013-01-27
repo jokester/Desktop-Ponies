@@ -252,9 +252,7 @@
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>robocopy "$(TargetDir)\" "G:\$(SolutionName)\$(ProjectName)\$(OutDir)\" /XO /MIR /XF *.tmp
-IF errorlevel 4 exit /b %25errorlevel%25
-robocopy "$(ProjectDir)\" "G:\$(SolutionName)\$(ProjectName)" /XO /MIR /XF *.tmp /XD bin obj
+    <PostBuildEvent>robocopy "$(SolutionDir)Content" "$(TargetDir)\" /XO /E
 IF errorlevel 4 exit /b %25errorlevel%25
 exit /b 0</PostBuildEvent>
   </PropertyGroup>
