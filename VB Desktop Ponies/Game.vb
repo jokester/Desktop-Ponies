@@ -237,7 +237,7 @@ Friend Module Games
             scoreboard.SetScores(Teams(0), Teams(1))
             scoreboard.HostEffect.DesiredDuration = 60 * 60 * 24 * 365
             Pony.CurrentAnimator.AddEffect(scoreboard.HostEffect)
-            Pony.CurrentAnimator.AddSprites(scoreboard.ScoreSprites)
+            Pony.CurrentAnimator.AddSprites(scoreboard.ScoreDisplays)
 
             For Each team In Teams
                 Dim positionsToRemove As New List(Of Position)
@@ -328,7 +328,9 @@ Friend Module Games
                                 Pony.CurrentAnimator.Pause(False)
                                 MessageBox.Show(team.Name & " won!", "Winner", MessageBoxButtons.OK, MessageBoxIcon.Information)
                                 Main.Instance.PonyShutdown()
-                                Main.Instance.Visible = True
+                                Main.Instance.Invoke(Sub()
+                                                         Main.Instance.Visible = True
+                                                     End Sub)
                                 Exit Sub
                             End If
                         Next
