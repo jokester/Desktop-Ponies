@@ -112,7 +112,7 @@ Public Class DesktopPonyAnimator
         MyBase.Start()
         If controlForm IsNot Nothing Then controlForm.SmartInvoke(AddressOf controlForm.Show)
 #If DEBUG Then
-        If Not Main.Instance.InPreviewMode Then
+        If Not Reference.InPreviewMode Then
             Main.Instance.Invoke(Sub()
                                      spriteDebugForm = New SpriteDebugForm()
                                      spriteDebugForm.Show()
