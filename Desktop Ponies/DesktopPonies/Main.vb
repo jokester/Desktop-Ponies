@@ -663,7 +663,7 @@ Public Class Main
             Next
         ElseIf e.KeyChar = "#"c Then
 #If DEBUG Then
-            Using newEditor = New PonyEditorForm2(ponies.Bases)
+            Using newEditor = New PonyEditorForm2()
                 newEditor.ShowDialog(Me)
             End Using
 #End If
