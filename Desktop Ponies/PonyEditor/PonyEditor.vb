@@ -432,61 +432,34 @@ Public Class PonyEditor
         Return behaviorSequencesByName
     End Function
 
-    ''' <summary>
-    ''' If we want to run a behavior that has a follow object, we can add it with this.
-    ''' </summary>
-    ''' <param name="name">The name of the pony to find, or add to the editor, so that it may be interacted with.</param>
-    ''' <returns>An existing pony in the editor that can be interacted with, if one exists. Otherwise a new pony started from the template
-    ''' with the specified name. If no such pony of template exists, returns null.</returns>
-    Private Function AddPony(name As String) As Pony
-
-        Try
-            For Each pony In editorAnimator.Ponies()
-                If Not Object.ReferenceEquals(PreviewPony, pony) AndAlso pony.Directory = name Then
-                    Return pony
-                End If
-            Next
-
-            For Each ponyBase In Ponies.Bases
-                If ponyBase.Directory = name Then
-                    Dim newPony = New Pony(ponyBase)
-                    editorAnimator.AddPony(newPony)
-                    Return newPony
-                End If
-            Next
-
-        Catch ex As Exception
-            My.Application.NotifyUserOfNonFatalException(ex, "Error adding pony to the editor. The editor will now close.")
-            Me.Close()
-        End Try
-
-        Return Nothing
-    End Function
-
     Public Sub RunBehavior(behavior As Behavior)
         Argument.EnsureNotNull(behavior, "behavior")
         Dim poniesToRemove = editorAnimator.Ponies().Where(Function(p) Not Object.ReferenceEquals(p, PreviewPony)).ToArray()
-            For Each pony In poniesToRemove
-                editorAnimator.RemovePonyAndReinitializeInteractions(pony)
-            Next
+        For Each pony In poniesToRemove
+            editorAnimator.RemovePony(pony)
+        Next
 
-            PreviewPony.ActiveEffects.Clear()
+        PreviewPony.ActiveEffects.Clear()
 
-            Dim followTarget As Pony = Nothing
-            If behavior.OriginalFollowTargetName <> "" Then
-                followTarget = AddPony(behavior.OriginalFollowTargetName)
-
-                If followTarget Is Nothing Then
-                    MessageBox.Show("The specified pony to follow (" & behavior.OriginalFollowTargetName &
-                                    ") for this behavior (" & behavior.Name &
-                                    ") does not exist, or has no behaviors. Please review this setting.",
-                                    "Cannot Run Behavior", MessageBoxButtons.OK, MessageBoxIcon.Warning)
-                    Return
-                End If
+        Dim followTarget As Pony = Nothing
+        If behavior.OriginalFollowTargetName <> "" Then
+            Dim targetBase = Ponies.Bases.OnlyOrDefault(Function(ponyBase) ponyBase.Directory = behavior.OriginalFollowTargetName)
+            If targetBase IsNot Nothing Then
+                followTarget = New Pony(targetBase)
+                editorAnimator.AddPony(followTarget)
             End If
 
-            PreviewPony.SelectBehavior(behavior)
-            PreviewPony.followTarget = followTarget
+            If followTarget Is Nothing Then
+                MessageBox.Show(Me, "The specified pony to follow (" & behavior.OriginalFollowTargetName &
+                                ") for this behavior (" & behavior.Name &
+                                ") does not exist, or has no behaviors. Please review this setting.",
+                                "Cannot Run Behavior", MessageBoxButtons.OK, MessageBoxIcon.Warning)
+                Return
+            End If
+        End If
+
+        PreviewPony.SelectBehavior(behavior)
+        PreviewPony.followTarget = followTarget
     End Sub
 
     Private Function GetGridItem(Of TPonyIniSerializable As IPonyIniSerializable)(sender As Object, e As DataGridViewCellEventArgs,
